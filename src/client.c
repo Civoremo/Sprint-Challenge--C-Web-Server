@@ -90,6 +90,7 @@ urlinfo_t *parse_url(char *url)
   urlinfo->port = strdup(port);
   urlinfo->path = strdup(path);
 
+
   return urlinfo;
 }
 
@@ -112,6 +113,24 @@ int send_request(int fd, char *hostname, char *port, char *path)
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+  int req_length = sprintf(request,
+    "GET "
+    "/%s "
+    "HTTP/1.1\n"
+    "Host: %s:%s\n"
+    "Connection: close\n\n",
+    path,
+    hostname,
+    port
+  );
+
+  // printf("Length: %d\n", req_length);
+
+  rv = send(fd, request, req_length, 0);
+
+  if (rv < 0) {
+    perror("send");
+  }
 
   return 0;
 }
@@ -120,6 +139,7 @@ int main(int argc, char *argv[])
 {  
   int sockfd, numbytes;  
   char buf[BUFSIZE];
+  unsigned int total = 0;
 
   if (argc != 2) {
     fprintf(stderr,"usage: client HOSTNAME:PORT/PATH\n");
@@ -139,6 +159,36 @@ int main(int argc, char *argv[])
   ///////////////////
   urlinfo_t *url = malloc(sizeof(urlinfo_t));
   url = parse_url(argv[1]);
+
+  sockfd = get_socket(url->hostname, url->port);
+
+  send_request(sockfd, url->hostname, url->port, url->path);
+
+  printf("\nRECEIVED:\n\n");
+  // numbytes = recv(sockfd, buf, BUFSIZE - 1, 0);
+  // printf("NUM: %d\n", numbytes);
+  // printf("BUF_L: %d\n", strlen(buf));
+  // printf("%s\n", buf);
+  while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
+  // print the data we got back to stdout
+    // printf("HELLO\n");
+    // printf("NUMBYTES: %d\n", numbytes);
+    printf("%s\n", buf);
+    // printf("\nMORE JUNK\n\n");
+    // numbytes -= (strlen(buf));
+    // numbytes -= strlen(buf) - 1;
+    // numbytes = recv(sockfd, buf, BUFSIZE - 1, 0);
+    // total += numbytes;
+    total += strlen(buf);
+    
+  }
+
+  if (numbytes <= 0) {
+    close(sockfd);
+  }
+  free(url);
+
+  printf("\n\nTOTAL: %d\n", total);
 
   return 0;
 }
