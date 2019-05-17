@@ -48,8 +48,7 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
-  if (strstr(hostname, "http://") == NULL) {
-    if (strstr(hostname, "https://") == NULL) {
+  if (strstr(hostname, "http") == NULL) {
       // printf("%s\n", hostname);
       char *spot = strchr(hostname, '/');
       if (spot != NULL) {
@@ -70,34 +69,6 @@ urlinfo_t *parse_url(char *url)
         // exit(1);
         port = "80";
       }
-    } else {
-      printf("DO NOT USE HTTP:// OR HTTPS:// FOR YOUR URL\n");
-      char *temp = strchr(hostname, 'w');
-      printf("%s\n", temp);
-
-      hostname = temp;
-
-      char *spot = strchr(hostname, '/');
-      if (spot != NULL) {
-        path = spot + 1;
-        *spot = '\0';
-      } else {
-        printf("no / found, check URL and try again\n");
-        exit(1);
-      }
-
-      spot = strchr(hostname, ':');
-
-      if (spot != NULL) {
-        port = spot + 1;
-        *spot = '\0';
-      } else {
-        // printf("no : found, check URL and try again\n");
-        // exit(1);
-        port = "80";
-      }
-    }
-
   } else {
     // printf("DO NOT USE HTTP:// OR HTTPS:// FOR YOUR URL\n");
     char *temp = strchr(hostname, 'w');
