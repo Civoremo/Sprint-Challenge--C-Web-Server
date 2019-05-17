@@ -48,6 +48,47 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+  if (strstr(hostname, "http://") == NULL || strstr(hostname, "https://") == NULL) {
+    // printf("%s\n", hostname);
+    char *spot = strchr(hostname, '/');
+    if (spot != NULL) {
+      path = spot + 1;
+      // printf("path: %s\n", path);
+      // printf("path: %d\n", path);
+      // printf("spot: %d\n", spot);
+      // printf("spot: %s\n", spot);
+      *spot = '\0';
+      // printf("%s\n", hostname);
+      // printf("spot after: %s\n\n", spot);
+    } else {
+      printf("no / found, check URL and try again\n");
+      exit(1);
+    }
+
+    spot = strchr(hostname, ':');
+
+    if (spot != NULL) {
+      port = spot + 1;
+      // printf("path: %s\n", port);
+      // printf("path: %d\n", port);
+      // printf("spot: %d\n", spot);
+      // printf("spot: %s\n", spot);
+      *spot = '\0';
+      // printf("%s\n", hostname);
+      // printf("spot after: %s\n", spot);
+    } else {
+      printf("no : found, check URL and try again\n");
+      exit(1);
+    }
+
+  } else {
+    printf("DO NOT USE HTTP:// OR HTTPS:// FOR YOUR URL\n");
+  }
+
+  // printf("PARSE: %s %s %s\n", hostname, port, path);
+  urlinfo->hostname = strdup(hostname);
+  urlinfo->port = strdup(port);
+  urlinfo->path = strdup(path);
 
   return urlinfo;
 }
@@ -96,6 +137,8 @@ int main(int argc, char *argv[])
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
+  urlinfo_t *url = malloc(sizeof(urlinfo_t));
+  url = parse_url(argv[1]);
 
   return 0;
 }
