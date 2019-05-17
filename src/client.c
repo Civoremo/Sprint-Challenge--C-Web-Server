@@ -48,41 +48,82 @@ urlinfo_t *parse_url(char *url)
   ///////////////////
   // IMPLEMENT ME! //
   ///////////////////
-  if (strstr(hostname, "http://") == NULL || strstr(hostname, "https://") == NULL) {
-    // printf("%s\n", hostname);
-    char *spot = strchr(hostname, '/');
-    if (spot != NULL) {
-      path = spot + 1;
-      // printf("path: %s\n", path);
-      // printf("path: %d\n", path);
-      // printf("spot: %d\n", spot);
-      // printf("spot: %s\n", spot);
-      *spot = '\0';
+  if (strstr(hostname, "http://") == NULL) {
+    if (strstr(hostname, "https://") == NULL) {
       // printf("%s\n", hostname);
-      // printf("spot after: %s\n\n", spot);
-    } else {
-      printf("no / found, check URL and try again\n");
-      exit(1);
-    }
+      char *spot = strchr(hostname, '/');
+      if (spot != NULL) {
+        path = spot + 1;
+        *spot = '\0';
+      } else {
+        printf("no / found, check URL and try again\n");
+        exit(1);
+      }
 
-    spot = strchr(hostname, ':');
+      spot = strchr(hostname, ':');
 
-    if (spot != NULL) {
-      port = spot + 1;
-      // printf("path: %s\n", port);
-      // printf("path: %d\n", port);
-      // printf("spot: %d\n", spot);
-      // printf("spot: %s\n", spot);
-      *spot = '\0';
-      // printf("%s\n", hostname);
-      // printf("spot after: %s\n", spot);
+      if (spot != NULL) {
+        port = spot + 1;
+        *spot = '\0';
+      } else {
+        // printf("no : found, check URL and try again\n");
+        // exit(1);
+        port = "80";
+      }
     } else {
-      printf("no : found, check URL and try again\n");
-      exit(1);
+      printf("DO NOT USE HTTP:// OR HTTPS:// FOR YOUR URL\n");
+      char *temp = strchr(hostname, 'w');
+      printf("%s\n", temp);
+
+      hostname = temp;
+
+      char *spot = strchr(hostname, '/');
+      if (spot != NULL) {
+        path = spot + 1;
+        *spot = '\0';
+      } else {
+        printf("no / found, check URL and try again\n");
+        exit(1);
+      }
+
+      spot = strchr(hostname, ':');
+
+      if (spot != NULL) {
+        port = spot + 1;
+        *spot = '\0';
+      } else {
+        // printf("no : found, check URL and try again\n");
+        // exit(1);
+        port = "80";
+      }
     }
 
   } else {
-    printf("DO NOT USE HTTP:// OR HTTPS:// FOR YOUR URL\n");
+    // printf("DO NOT USE HTTP:// OR HTTPS:// FOR YOUR URL\n");
+    char *temp = strchr(hostname, 'w');
+    // printf("%s\n", temp);
+
+    hostname = temp;
+
+    char *spot = strchr(hostname, '/');
+      if (spot != NULL) {
+        path = spot + 1;
+        *spot = '\0';
+      } else {
+        printf("no / found, check URL and try again\n");
+        exit(1);
+      }
+
+      spot = strchr(hostname, ':');
+
+      if (spot != NULL) {
+        port = spot + 1;
+        *spot = '\0';
+      } else {
+        // printf("no : found, check URL and try again\n");
+        // exit(1);
+        port = "80";
+      }
   }
 
   // printf("PARSE: %s %s %s\n", hostname, port, path);
@@ -173,7 +214,7 @@ int main(int argc, char *argv[])
   // print the data we got back to stdout
     // printf("HELLO\n");
     // printf("NUMBYTES: %d\n", numbytes);
-    printf("%s\n", buf);
+    printf("%s", buf);
     // printf("\nMORE JUNK\n\n");
     // numbytes -= (strlen(buf));
     // numbytes -= strlen(buf) - 1;
